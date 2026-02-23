@@ -1,58 +1,29 @@
-package com.promanage;
+package com.promnage.main;
 
+import com.promnage.model.Project;
+import com.promnage.service.*;
 
-import java.util.*;
-public class Main {
+import java.util.List;
 
-    public static void main(String[] args) throws Exception {
+public class PromnageSystem {
 
-        Scanner sc = new Scanner(System.in);
-        ProjectDAO dao = new ProjectDAO();
+    public static void main(String[] args) {
 
-        while (true) {
+        try {
+            System.out.println("Connecting to database...");
 
-            System.out.println("\n1. Add Project");
-            System.out.println("2. View Projects");
-            System.out.println("3. Generate Schedule");
-            System.out.println("4. Exit");
+            List<Integer> history = DataService.getLast3WeekRevenue();
 
-            int choice = sc.nextInt();
-            sc.nextLine();
+            double predictedRevenue = WeightedMovingAveragePredictor.predict(history);
 
-            switch (choice) {
+            System.out.println("Predicted Next Week Revenue = " + predictedRevenue);
 
-                case 1:
-                    System.out.print("Title: ");
-                    String title = sc.nextLine();
+            List<Project> projects = DataService.getAllProjects();
 
-                    System.out.print("Deadline (1-5): ");
-                    int deadline = sc.nextInt();
+            Scheduler.scheduleProjects(projects, predictedRevenue);
 
-                    System.out.print("Revenue: ");
-                    int revenue = sc.nextInt();
-
-                    dao.addProject(new Project(title, deadline, revenue));
-                    System.out.println("Project Added!");
-                    break;
-
-                case 2:
-                    for (Project p : dao.getAllProjects()) {
-                        System.out.println(p.getId() + " | " +
-                                p.getTitle() + " | " +
-                                p.getDeadline() + " | " +
-                                p.getRevenue());
-                    }
-                    break;
-
-                case 3:
-                    Scheduler.generateSchedule(dao.getAllProjects());
-                    break;
-
-                case 4:
-                    System.exit(0);
-            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
-}
-
-
