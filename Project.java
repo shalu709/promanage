@@ -1,4 +1,4 @@
-package com.promnage.model;
+package com.promanage;
 
 public class Project {
 
@@ -6,6 +6,12 @@ public class Project {
     private String title;
     private int deadline;
     private int revenue;
+
+    public Project(String title, int deadline, int revenue) {
+        this.title = title;
+        this.deadline = deadline;
+        this.revenue = revenue;
+    }
 
     public Project(int id, String title, int deadline, int revenue) {
         this.id = id;
