@@ -1,39 +1,16 @@
 package com.promanage;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
-public class Scheduler {
+public class DBConnection {
 
-    public static void generateSchedule(List<Project> projects) {
+    public static Connection getConnection() throws Exception {
 
-        projects.sort((a, b) -> b.getRevenue() - a.getRevenue());
+        String url = "jdbc:postgresql://localhost:5432/promanage";
+        String user = "postgres";
+        String password = "shalu2606";
 
-        Project[] week = new Project[5];
-        int totalRevenue = 0;
-
-        for (Project p : projects) {
-
-            int lastDay = Math.min(p.getDeadline(), 5) - 1;
-
-            for (int j = lastDay; j >= 0; j--) {
-                if (week[j] == null) {
-                    week[j] = p;
-                    totalRevenue += p.getRevenue();
-                    break;
-                }
-            }
-        }
-
-        String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday"};
-
-        System.out.println("\nWeekly Schedule:");
-        for (int i = 0; i < 5; i++) {
-            if (week[i] != null)
-                System.out.println(days[i] + " → " + week[i].getTitle());
-            else
-                System.out.println(days[i] + " → No Project");
-        }
-
-        System.out.println("Total Revenue: " + totalRevenue);
+        return DriverManager.getConnection(url, user, password);
     }
 }
